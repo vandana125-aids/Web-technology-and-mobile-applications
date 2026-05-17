@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>InternHub — Browse Internships</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f4ff;--white:#fff;--navy:#0b1020;--navy2:#151d35;
+  --accent:#5b4fcf;--accent2:#e8445a;--accent3:#10b981;
+  --amber:#f59e0b;--text:#1e293b;--muted:#64748b;
+  --border:#e2e8f0;--sidebar:265px;--shadow:0 4px 24px rgba(11,16,32,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+ 
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);min-height:100vh;background:var(--navy);position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(11,16,32,0.2);}
+.brand{display:flex;align-items:center;gap:11px;padding:26px 22px 20px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.brand-orb{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5b4fcf,#e8445a);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.brand-txt{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;}
+.nav-sec{padding:18px 14px 6px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.22);}
+.nav-a{display:flex;align-items:center;gap:12px;padding:11px 16px;margin:2px 8px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:14px;font-weight:500;text-decoration:none;transition:all .2s;cursor:pointer;}
+.nav-a:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.nav-a.active{background:linear-gradient(135deg,rgba(91,79,207,0.3),rgba(232,68,90,0.15));color:#fff;border:1px solid rgba(91,79,207,0.3);}
+.nav-a .ic{font-size:18px;width:22px;text-align:center;}
+.nbadge{margin-left:auto;background:#5b4fcf;color:#fff;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700;}
+.sidebar-foot{margin-top:auto;padding:18px 20px;border-top:1px solid rgba(255,255,255,0.07);}
+.u-row{display:flex;align-items:center;gap:10px;}
+.u-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#5b4fcf,#e8445a);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;}
+.u-n{font-size:13px;color:#fff;font-weight:600;}
+.u-r{font-size:11px;color:rgba(255,255,255,0.4);}
+ 
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:15px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(11,16,32,0.04);}
+.tb-left h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+.tb-left p{font-size:13px;color:var(--muted);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-icon{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;position:relative;}
+.ndot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#e8445a;border:2px solid #fff;}
+.content{padding:28px 32px;flex:1;}
+ 
+/* HERO */
+.hero{background:linear-gradient(135deg,#0b1020 0%,#1a0a40 55%,#0b1a35 100%);border-radius:20px;padding:34px 40px;margin-bottom:26px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(91,79,207,0.18),transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-50px;left:280px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(232,68,90,0.1),transparent 70%);pointer-events:none;}
+.hero h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;z-index:1;}
+.hero h2 em{font-style:normal;background:linear-gradient(90deg,#a78bfa,#fb7185);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:22px;position:relative;z-index:1;}
+.hero-stats{display:flex;gap:24px;position:relative;z-index:1;margin-bottom:22px;}
+.hs{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;text-align:center;}
+.hs-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#a78bfa;}
+.hs-lbl{font-size:11px;color:rgba(255,255,255,0.45);}
+.search-row{display:flex;gap:10px;position:relative;z-index:1;}
+.sw{flex:1;position:relative;}
+.sw .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;color:rgba(255,255,255,0.35);}
+.si-inp{width:100%;padding:13px 13px 13px 42px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;backdrop-filter:blur(8px);transition:border-color .2s;}
+.si-inp::placeholder{color:rgba(255,255,255,0.25);}
+.si-inp:focus{border-color:rgba(91,79,207,.7);}
+.lw{width:175px;position:relative;}
+.lw .li{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:rgba(255,255,255,0.35);}
+.li-inp{width:100%;padding:13px 13px 13px 34px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;}
+.li-inp::placeholder{color:rgba(255,255,255,0.25);}
+.s-btn{padding:13px 26px;border-radius:12px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;white-space:nowrap;transition:opacity .2s,transform .15s;}
+.s-btn:hover{opacity:.9;transform:translateY(-1px);}
+ 
+/* FILTER CHIPS */
+.chips{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;align-items:center;}
+.fl{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.chip{padding:7px 14px;border-radius:99px;border:1px solid var(--border);background:var(--white);font-size:13px;cursor:pointer;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;}
+.chip:hover{border-color:var(--accent);color:var(--accent);}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sort-s{padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--white);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-left:auto;cursor:pointer;}
+ 
+/* BODY */
+.body-wrap{display:flex;gap:20px;}
+.filter-col{width:215px;flex-shrink:0;}
+.fc{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
+.fc h4{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px;}
+.fopt{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.fopt input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
+.fopt label{font-size:13px;color:var(--muted);cursor:pointer;flex:1;}
+.fopt .cn{font-size:11px;color:var(--muted);}
+input[type=range]{width:100%;accent-color:var(--accent);margin:6px 0;cursor:pointer;}
+.rv{font-size:12px;color:var(--accent);font-weight:700;}
+.af{width:100%;padding:10px;border-radius:9px;border:none;cursor:pointer;background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;margin-top:6px;}
+ 
+/* CARDS */
+.cards-col{flex:1;}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.ch h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.ch span{font-size:13px;color:var(--muted);}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:16px;}
+ 
+/* INTERNSHIP CARD */
+.icard{background:var(--white);border-radius:16px;border:1px solid var(--border);overflow:hidden;transition:transform .25s,box-shadow .25s;cursor:pointer;animation:su .4s ease both;box-shadow:var(--shadow);}
+.icard:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(11,16,32,0.13);}
+@keyframes su{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.icard-thumb{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+.ic-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(11,16,32,0.3));}
+.ic-type{position:absolute;top:10px;left:10px;background:rgba(11,16,32,0.65);backdrop-filter:blur(6px);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em;}
+.ic-save{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+.ic-save:hover{transform:scale(1.15);}
+.ic-feat{position:absolute;bottom:10px;left:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;text-transform:uppercase;}
+.icard-body{padding:15px 17px 17px;}
+.co-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.co-logo{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--border);background:#f8f9ff;flex-shrink:0;}
+.co-name{font-size:13px;font-weight:600;}
+.co-v{color:#5b4fcf;font-size:14px;}
+.ic-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;color:var(--navy);line-height:1.3;}
+.ic-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px;}
+.tag{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;}
+.tag-p{background:#ede9fe;color:#5b21b6;}
+.tag-b{background:#dbeafe;color:#1d4ed8;}
+.tag-g{background:#d1fae5;color:#065f46;}
+.ic-meta{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);}
+.meta-item{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--muted);}
+.apply-btn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;transition:opacity .2s,transform .15s;}
+.apply-btn:hover{opacity:.9;transform:scale(1.03);}
+ 
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(11,16,32,0.65);backdrop-filter:blur(5px);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:580px;max-width:95vw;max-height:86vh;overflow-y:auto;animation:popIn .25s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.modal-top{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1;}
+.modal-top h2{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.cx{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:22px 24px;}
+.m-thumb{height:180px;border-radius:12px;margin-bottom:18px;display:flex;align-items:center;justify-content:center;font-size:72px;}
+.m-co{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.m-co-logo{width:46px;height:46px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.m-co-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
+.m-co-sub{font-size:12px;color:var(--muted);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+.dg-item{background:var(--bg);border-radius:10px;padding:12px 14px;}
+.dg-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px;}
+.dg-val{font-size:13px;font-weight:600;}
+.m-sec{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin:14px 0 8px;}
+.m-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+.skill-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.sc{background:#ede9fe;color:#5b21b6;font-size:12px;padding:4px 10px;border-radius:6px;font-weight:500;}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.mf-sec{flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+.mf-pri{flex:2;padding:12px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;}
+ 
+/* APPLY FORM MODAL */
+.apply-modal{background:var(--white);border-radius:20px;width:500px;max-width:95vw;max-height:86vh;overflow-y:auto;animation:popIn .25s ease;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.fg label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.fg input,.fg select,.fg textarea{padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;color:var(--text);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);background:#fff;}
+.fg textarea{resize:vertical;min-height:80px;}
+</style>
+</head>
+<body>
+ 
+<aside class="sidebar">
+  <div class="brand"><div class="brand-orb">🎓</div><span class="brand-txt">InternHub</span></div>
+  <span class="nav-sec">Main</span>
+  <a href="student-dashboard.html" class="nav-a"><span class="ic">🏠</span> Dashboard</a>
+  <a href="internship-listings.html" class="nav-a active"><span class="ic">💼</span> Browse Internships <span class="nbadge">2.4K</span></a>
+  <a href="#" class="nav-a"><span class="ic">📋</span> My Applications</a>
+  <a href="#" class="nav-a"><span class="ic">📚</span> LMS Courses</a>
+  <span class="nav-sec">Profile</span>
+  <a href="#" class="nav-a"><span class="ic">👤</span> My Profile</a>
+  <a href="#" class="nav-a"><span class="ic">🔔</span> Notifications <span class="nbadge">5</span></a>
+  <a href="#" class="nav-a"><span class="ic">⭐</span> Feedback</a>
+  <span class="nav-sec">Admin</span>
+  <a href="admin-dashboard.html" class="nav-a"><span class="ic">🛡️</span> Admin Panel</a>
+  <a href="login.html" class="nav-a"><span class="ic">🚪</span> Logout</a>
+  <div class="sidebar-foot">
+    <div class="u-row">
+      <div class="u-av">V</div>
+      <div><div class="u-n">Vandana R</div><div class="u-r">Student · AIDS · REC</div></div>
+    </div>
+  </div>
+</aside>
+ 
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left"><h1>Browse Internships</h1><p>Find the perfect opportunity for your career 🚀</p></div>
+    <div class="tb-right"><div class="tb-icon">🔔<div class="ndot"></div></div><div class="tb-icon">⚙️</div></div>
+  </div>
+ 
+  <div class="content">
+    <!-- HERO -->
+    <div class="hero">
+      <h2>Find Your Dream <em>Internship</em> 🚀</h2>
+      <p>2,400+ opportunities from 580+ companies — updated daily for you</p>
+      <div class="hero-stats">
+        <div class="hs"><div class="hs-num">2.4K+</div><div class="hs-lbl">Internships</div></div>
+        <div class="hs"><div class="hs-num">580+</div><div class="hs-lbl">Companies</div></div>
+        <div class="hs"><div class="hs-num">18K+</div><div class="hs-lbl">Students</div></div>
+        <div class="hs"><div class="hs-num">₹14K</div><div class="hs-lbl">Avg Stipend</div></div>
+      </div>
+      <div class="search-row">
+        <div class="sw"><span class="si">🔍</span><input class="si-inp" type="text" id="sQ" placeholder="Search by role, skill, or company..." oninput="filterCards()"/></div>
+        <div class="lw"><span class="li">📍</span><input class="li-inp" type="text" id="lQ" placeholder="Location..." oninput="filterCards()"/></div>
+        <button class="s-btn" onclick="filterCards()">Search</button>
+      </div>
+    </div>
+ 
+    <!-- CHIPS -->
+    <div class="chips">
+      <span class="fl">Domain:</span>
+      <button class="chip on" onclick="setChip(this,'all')">All</button>
+      <button class="chip" onclick="setChip(this,'tech')">💻 Tech</button>
+      <button class="chip" onclick="setChip(this,'design')">🎨 Design</button>
+      <button class="chip" onclick="setChip(this,'marketing')">📢 Marketing</button>
+      <button class="chip" onclick="setChip(this,'finance')">💰 Finance</button>
+      <button class="chip" onclick="setChip(this,'hr')">🤝 HR</button>
+      <select class="sort-s" onchange="sortCards(this.value)">
+        <option value="">Sort: Newest</option>
+        <option value="stipend">Highest Stipend</option>
+        <option value="short">Shortest Duration</option>
+      </select>
+    </div>
+ 
+    <div class="body-wrap">
+      <!-- FILTERS -->
+      <div class="filter-col">
+        <div class="fc">
+          <h4>📍 Location</h4>
+          <div class="fopt"><input type="checkbox" id="l1" checked/><label for="l1">Remote</label><span class="cn">842</span></div>
+          <div class="fopt"><input type="checkbox" id="l2"/><label for="l2">Chennai</label><span class="cn">210</span></div>
+          <div class="fopt"><input type="checkbox" id="l3"/><label for="l3">Bangalore</label><span class="cn">480</span></div>
+          <div class="fopt"><input type="checkbox" id="l4"/><label for="l4">Mumbai</label><span class="cn">320</span></div>
+          <div class="fopt"><input type="checkbox" id="l5"/><label for="l5">Hyderabad</label><span class="cn">275</span></div>
+        </div>
+        <div class="fc">
+          <h4>💰 Stipend (₹)</h4>
+          <input type="range" min="0" max="50000" step="1000" value="20000" oninput="document.getElementById('rv').textContent='₹'+Number(this.value).toLocaleString()"/>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--muted)">₹0</span><span id="rv" class="rv">₹20,000</span></div>
+        </div>
+        <div class="fc">
+          <h4>📅 Duration</h4>
+          <div class="fopt"><input type="checkbox" id="d1"/><label for="d1">1–2 Months</label></div>
+          <div class="fopt"><input type="checkbox" id="d2" checked/><label for="d2">3–4 Months</label></div>
+          <div class="fopt"><input type="checkbox" id="d3"/><label for="d3">6 Months</label></div>
+        </div>
+        <div class="fc">
+          <h4>🎓 Eligibility</h4>
+          <div class="fopt"><input type="checkbox" id="e1" checked/><label for="e1">Any Year</label></div>
+          <div class="fopt"><input type="checkbox" id="e2"/><label for="e2">2nd Year</label></div>
+          <div class="fopt"><input type="checkbox" id="e3"/><label for="e3">Final Year</label></div>
+        </div>
+        <button class="af" onclick="filterCards()">Apply Filters</button>
+      </div>
+ 
+      <!-- CARDS -->
+      <div class="cards-col">
+        <div class="ch">
+          <h3>Available Internships</h3>
+          <span id="countLbl">Showing 8 of 2,400+</span>
+        </div>
+        <div class="cards-grid" id="cardsGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" onclick="closeDM(event)">
+  <div class="modal">
+    <div class="modal-top"><h2 id="dm-title"></h2><button class="cx" onclick="document.getElementById('detailModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body" id="dm-body"></div>
+    <div class="modal-foot">
+      <button class="mf-sec" onclick="saveJob()">🤍 Save</button>
+      <button class="mf-pri" onclick="openApplyModal()">Apply Now 🚀</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- APPLY MODAL -->
+<div class="modal-overlay" id="applyModal" onclick="closeAM(event)">
+  <div class="apply-modal">
+    <div class="modal-top"><h2>📝 Apply for Internship</h2><button class="cx" onclick="document.getElementById('applyModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Full Name</label><input type="text" value="Vandana R" readonly/></div>
+      <div class="fg"><label>Email</label><input type="email" value="vandana@rec.edu" readonly/></div>
+      <div class="fg"><label>Phone</label><input type="tel" placeholder="Enter your phone number"/></div>
+      <div class="fg"><label>College</label><input type="text" value="Rajalakshmi Engineering College" readonly/></div>
+      <div class="fg"><label>Department & Year</label><input type="text" value="AIDS — 2nd Year" readonly/></div>
+      <div class="fg"><label>Cover Letter</label><textarea placeholder="Why are you interested in this role? What makes you the right fit?"></textarea></div>
+      <div class="fg"><label>Resume (PDF)</label><input type="file" accept=".pdf"/></div>
+      <div class="fg"><label>Availability (Start Date)</label><input type="date"/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="mf-sec" onclick="document.getElementById('applyModal').classList.remove('open')">Cancel</button>
+      <button class="mf-pri" onclick="submitApplication()">Submit Application 🚀</button>
+    </div>
+  </div>
+</div>
+ 
+<script>
+const data = [
+  {id:1,emoji:'💻',title:'Frontend Developer Intern',company:'TechSoft Solutions',logo:'🏢',domain:'tech',location:'Remote',duration:'3 months',stipend:15000,tags:['React','CSS','Git'],type:'Full-time',featured:true,desc:'Work on real-world web applications. Build UI components, optimise performance, and collaborate with designers. Stack: React, Tailwind, Firebase.'},
+  {id:2,emoji:'🎨',title:'UI/UX Design Intern',company:'Creative Studio',logo:'🎭',domain:'design',location:'Chennai',duration:'2 months',stipend:10000,tags:['Figma','Prototyping','Research'],type:'Part-time',featured:false,desc:'Create intuitive user experiences for mobile and web. Conduct user research, wireframe ideas, and hand off to developers.'},
+  {id:3,emoji:'📢',title:'Digital Marketing Intern',company:'GrowthHive',logo:'🚀',domain:'marketing',location:'Remote',duration:'4 months',stipend:8000,tags:['SEO','Content','Analytics'],type:'Remote',featured:true,desc:'Drive online presence through SEO, social media, and content strategies. Work with real campaigns and tools.'},
+  {id:4,emoji:'🤖',title:'Machine Learning Intern',company:'DataNexa AI',logo:'🤖',domain:'tech',location:'Bangalore',duration:'6 months',stipend:25000,tags:['Python','TensorFlow','NLP'],type:'Full-time',featured:false,desc:'Build and deploy ML models for NLP and computer vision alongside senior data scientists.'},
+  {id:5,emoji:'💰',title:'Finance & Accounts Intern',company:'FinServe Corp',logo:'🏦',domain:'finance',location:'Mumbai',duration:'3 months',stipend:12000,tags:['Excel','Tally','GST'],type:'On-site',featured:false,desc:'Assist the accounts team with GST filings, bookkeeping, and financial reporting.'},
+  {id:6,emoji:'🤝',title:'HR Recruitment Intern',company:'PeopleFirst',logo:'👥',domain:'hr',location:'Hyderabad',duration:'2 months',stipend:7000,tags:['Recruiting','LinkedIn','HR Tools'],type:'Hybrid',featured:false,desc:'Support the HR team with sourcing, screening, and onboarding candidates.'},
+  {id:7,emoji:'📱',title:'Android App Intern',company:'AppCraft',logo:'📲',domain:'tech',location:'Remote',duration:'3 months',stipend:18000,tags:['Kotlin','Android','Firebase'],type:'Remote',featured:true,desc:'Develop features for a consumer Android app with 500K+ users. Stack: Kotlin, Jetpack Compose, Firebase.'},
+  {id:8,emoji:'✍️',title:'Content Writing Intern',company:'MediaBlast',logo:'📰',domain:'marketing',location:'Remote',duration:'2 months',stipend:6000,tags:['Writing','SEO','WordPress'],type:'Remote',featured:false,desc:'Produce engaging blog posts, social media content, and newsletters.'},
+];
+ 
+const bgs = {tech:'linear-gradient(135deg,#dbeafe,#bfdbfe)',design:'linear-gradient(135deg,#fce7f3,#fbcfe8)',marketing:'linear-gradient(135deg,#fef3c7,#fed7aa)',finance:'linear-gradient(135deg,#d1fae5,#a7f3d0)',hr:'linear-gradient(135deg,#ffe4e6,#fecaca)'};
+let activeFilter = 'all', saved = new Set(), currentId = null;
+ 
+function renderCards(arr){
+  const g = document.getElementById('cardsGrid');
+  g.innerHTML = '';
+  document.getElementById('countLbl').textContent = `Showing ${arr.length} of 2,400+`;
+  arr.forEach((d,i) => {
+    const bg = bgs[d.domain] || 'linear-gradient(135deg,#e0e7ff,#c7d2fe)';
+    g.innerHTML += `
+    <div class="icard" style="animation-delay:${i*0.07}s" onclick="openDetail(${d.id})">
+      <div class="icard-thumb" style="background:${bg}">
+        <span>${d.emoji}</span>
+        <div class="ic-overlay"></div>
+        <span class="ic-type">${d.type}</span>
+        <button class="ic-save" onclick="event.stopPropagation();toggleSave(${d.id},this)">${saved.has(d.id)?'❤️':'🤍'}</button>
+        ${d.featured?'<span class="ic-feat">⭐ Featured</span>':''}
+      </div>
+      <div class="icard-body">
+        <div class="co-row"><div class="co-logo">${d.logo}</div><span class="co-name">${d.company} <span class="co-v">✔</span></span></div>
+        <div class="ic-title">${d.title}</div>
+        <div class="ic-tags">${d.tags.map((t,ti)=>`<span class="tag ${['tag-p','tag-b','tag-g'][ti%3]}">${t}</span>`).join('')}</div>
+        <div class="ic-meta">
+          <span class="meta-item">📍 ${d.location}</span>
+          <span class="meta-item">⏱ ${d.duration}</span>
+          <span class="meta-item">💰 ₹${(d.stipend/1000).toFixed(0)}K</span>
+          <button class="apply-btn" onclick="event.stopPropagation();quickApply(${d.id})">Apply</button>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+ 
+function setChip(el,f){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); activeFilter=f; filterCards();
+}
+ 
+function filterCards(){
+  const q = document.getElementById('sQ').value.toLowerCase();
+  const l = document.getElementById('lQ').value.toLowerCase();
+  const filtered = data.filter(d => {
+    const mQ = !q || d.title.toLowerCase().includes(q) || d.company.toLowerCase().includes(q) || d.tags.join(' ').toLowerCase().includes(q);
+    const mL = !l || d.location.toLowerCase().includes(l);
+    const mF = activeFilter==='all' || d.domain===activeFilter;
+    return mQ && mL && mF;
+  });
+  renderCards(filtered);
+}
+ 
+function sortCards(v){
+  let arr = [...data];
+  if(v==='stipend') arr.sort((a,b)=>b.stipend-a.stipend);
+  if(v==='short') arr.sort((a,b)=>parseInt(a.duration)-parseInt(b.duration));
+  renderCards(arr);
+}
+ 
+function toggleSave(id,btn){
+  saved.has(id) ? saved.delete(id) : saved.add(id);
+  btn.textContent = saved.has(id) ? '❤️' : '🤍';
+}
+ 
+function openDetail(id){
+  currentId = id;
+  const d = data.find(x=>x.id===id);
+  const bg = bgs[d.domain] || 'linear-gradient(135deg,#e0e7ff,#c7d2fe)';
+  document.getElementById('dm-title').textContent = d.title;
+  document.getElementById('dm-body').innerHTML = `
+    <div class="m-thumb" style="background:${bg}">${d.emoji}</div>
+    <div class="m-co"><div class="m-co-logo">${d.logo}</div><div><div class="m-co-name">${d.company} ✔</div><div class="m-co-sub">${d.type} Internship</div></div></div>
+    <div class="detail-grid">
+      <div class="dg-item"><div class="dg-lbl">📍 Location</div><div class="dg-val">${d.location}</div></div>
+      <div class="dg-item"><div class="dg-lbl">⏱ Duration</div><div class="dg-val">${d.duration}</div></div>
+      <div class="dg-item"><div class="dg-lbl">💰 Stipend</div><div class="dg-val">₹${d.stipend.toLocaleString()}/mo</div></div>
+      <div class="dg-item"><div class="dg-lbl">🎓 Eligibility</div><div class="dg-val">Any Year</div></div>
+    </div>
+    <div class="m-sec">About the Role</div>
+    <p class="m-desc">${d.desc}</p>
+    <div class="m-sec">Skills Required</div>
+    <div class="skill-chips">${d.tags.map(t=>`<span class="sc">${t}</span>`).join('')}</div>`;
+  document.getElementById('detailModal').classList.add('open');
+}
+ 
+function closeDM(e){ if(e.target===document.getElementById('detailModal')) document.getElementById('detailModal').classList.remove('open'); }
+function closeAM(e){ if(e.target===document.getElementById('applyModal')) document.getElementById('applyModal').classList.remove('open'); }
+function openApplyModal(){ document.getElementById('detailModal').classList.remove('open'); document.getElementById('applyModal').classList.add('open'); }
+function quickApply(id){ currentId=id; document.getElementById('applyModal').classList.add('open'); }
+function saveJob(){ const d=data.find(x=>x.id===currentId); alert(`💾 "${d.title}" saved to your wishlist!`); document.getElementById('detailModal').classList.remove('open'); }
+function submitApplication(){ alert('✅ Application submitted successfully!\n\nYou will be notified via email and SMS.\n\nGood luck, Vandana! 🚀'); document.getElementById('applyModal').classList.remove('open'); }
+ 
+renderCards(data);
+</script>
+</body>
+</html>
