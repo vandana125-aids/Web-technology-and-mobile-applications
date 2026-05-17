@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>InternHub — Company Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f2ff;
+  --white:#ffffff;
+  --navy:#0f1535;
+  --navy2:#1a2248;
+  --accent:#5b4fcf;
+  --accent2:#e8445a;
+  --accent3:#00c896;
+  --amber:#f59e0b;
+  --text:#1a1f3a;
+  --muted:#6b7280;
+  --border:#e4e7f0;
+  --sidebar:265px;
+  --card-shadow:0 4px 24px rgba(15,21,53,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+ 
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);min-height:100vh;
+  background:var(--navy);
+  position:fixed;top:0;left:0;z-index:100;
+  display:flex;flex-direction:column;
+  box-shadow:4px 0 24px rgba(15,21,53,0.2);
+}
+.brand{display:flex;align-items:center;gap:11px;padding:26px 22px 22px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.brand-mark{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,#5b4fcf,#e8445a);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.brand-txt{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;}
+.brand-badge{margin-left:auto;background:rgba(232,68,90,0.2);color:#ff7089;font-size:10px;padding:3px 8px;border-radius:6px;font-weight:700;border:1px solid rgba(232,68,90,0.3);}
+ 
+.nav-sec{padding:18px 14px 6px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.nav-a{
+  display:flex;align-items:center;gap:12px;padding:11px 16px;margin:2px 8px;
+  border-radius:10px;color:rgba(255,255,255,0.5);font-size:14px;font-weight:500;
+  text-decoration:none;transition:all .2s;cursor:pointer;
+}
+.nav-a:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.nav-a.active{
+  background:linear-gradient(135deg,rgba(91,79,207,0.35),rgba(232,68,90,0.15));
+  color:#fff;border:1px solid rgba(91,79,207,0.3);
+}
+.nav-a .ic{font-size:18px;width:22px;text-align:center;}
+.nbadge{margin-left:auto;background:#e8445a;color:#fff;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:700;}
+.sidebar-foot{margin-top:auto;padding:18px 20px;border-top:1px solid rgba(255,255,255,0.07);}
+.co-row{display:flex;align-items:center;gap:10px;}
+.co-av{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#5b4fcf,#e8445a);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.co-name{font-size:13px;color:#fff;font-weight:600;}
+.co-role{font-size:11px;color:rgba(255,255,255,0.4);}
+ 
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:16px 32px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(15,21,53,0.04);
+}
+.tb-left h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;}
+.tb-left p{font-size:13px;color:var(--muted);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-icon{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .2s;position:relative;}
+.tb-icon:hover{border-color:var(--accent);background:#f5f3ff;}
+.ndot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#e8445a;border:2px solid #fff;}
+.post-btn{
+  padding:10px 20px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:600;
+  background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;
+  transition:opacity .2s,transform .15s;display:flex;align-items:center;gap:6px;
+}
+.post-btn:hover{opacity:.9;transform:translateY(-1px);}
+ 
+.content{padding:28px 32px;flex:1;}
+ 
+/* ── WELCOME BANNER ── */
+.welcome{
+  background:linear-gradient(135deg,#0f1535 0%,#1e1060 50%,#2d0f3f 100%);
+  border-radius:20px;padding:28px 36px;margin-bottom:26px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.welcome::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(91,79,207,0.2),transparent 70%);}
+.welcome::after{content:'';position:absolute;bottom:-40px;left:250px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(232,68,90,0.12),transparent 70%);}
+.welcome-text{position:relative;z-index:1;}
+.welcome-text h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;}
+.welcome-text h2 span{background:linear-gradient(90deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.welcome-text p{color:rgba(255,255,255,0.55);font-size:14px;margin-bottom:18px;}
+.welcome-actions{display:flex;gap:10px;position:relative;z-index:1;}
+.wa-btn{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;transition:all .2s;}
+.wa-primary{background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;}
+.wa-secondary{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.wa-btn:hover{transform:translateY(-1px);opacity:.9;}
+.welcome-stats{display:flex;gap:20px;position:relative;z-index:1;}
+.ws{text-align:center;}
+.ws-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#a78bfa;}
+.ws-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+ 
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px;}
+.stat-card{
+  background:var(--white);border-radius:16px;border:1px solid var(--border);
+  padding:20px 22px;box-shadow:var(--card-shadow);
+  display:flex;align-items:center;gap:14px;
+  transition:transform .2s,box-shadow .2s;cursor:pointer;
+  animation:slideUp .4s ease both;
+}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(15,21,53,0.12);}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.stat-card:nth-child(1){animation-delay:.05s;}
+.stat-card:nth-child(2){animation-delay:.1s;}
+.stat-card:nth-child(3){animation-delay:.15s;}
+.stat-card:nth-child(4){animation-delay:.2s;}
+.stat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.stat-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;}
+.stat-lbl{font-size:12px;color:var(--muted);margin-top:2px;}
+.stat-trend{font-size:11px;font-weight:600;margin-top:3px;}
+.trend-up{color:var(--accent3);}
+.trend-down{color:var(--accent2);}
+ 
+/* ── TWO COL LAYOUT ── */
+.two-col{display:grid;grid-template-columns:1fr 360px;gap:22px;margin-bottom:22px;}
+ 
+/* ── JOB LISTINGS TABLE ── */
+.card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden;}
+.card-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-hdr h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.card-actions{display:flex;gap:8px;}
+.ca-input{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:12px;outline:none;font-family:'Plus Jakarta Sans',sans-serif;width:160px;}
+.ca-btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;background:var(--accent);color:#fff;transition:opacity .2s;}
+.ca-btn:hover{opacity:.85;}
+ 
+table{width:100%;border-collapse:collapse;}
+th{padding:11px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:#f8f9ff;border-bottom:1px solid var(--border);}
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+.td-bold{font-weight:600;color:var(--navy);}
+.badge{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;}
+.b-active{background:#d1fae5;color:#065f46;}
+.b-closed{background:#fee2e2;color:#991b1b;}
+.b-draft{background:#fef3c7;color:#92400e;}
+.act-btns{display:flex;gap:5px;}
+.act{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;font-size:11px;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.act:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.act.red:hover{background:var(--accent2);border-color:var(--accent2);}
+ 
+/* ── APPLICANTS PANEL ── */
+.applicants-panel{display:flex;flex-direction:column;gap:14px;}
+.ap-hdr{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ap-hdr h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.ap-list{padding:12px 16px;}
+.applicant{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;transition:background .2s;cursor:pointer;}
+.applicant:hover{background:var(--bg);}
+.ap-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;}
+.ap-name{font-size:13px;font-weight:600;}
+.ap-role{font-size:11px;color:var(--muted);}
+.ap-right{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.ap-status{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:600;}
+.aps-new{background:#dbeafe;color:#1d4ed8;}
+.aps-short{background:#d1fae5;color:#065f46;}
+.aps-rej{background:#fee2e2;color:#991b1b;}
+.ap-time{font-size:10px;color:var(--muted);}
+ 
+/* ── QUICK POST MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,21,53,0.7);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:20px;width:560px;max-width:95vw;max-height:88vh;overflow-y:auto;animation:popIn .25s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+.modal-top{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1;}
+.modal-top h2{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.close-x{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:24px 26px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.fgroup{display:flex;flex-direction:column;gap:5px;}
+.fgroup.full{grid-column:1/-1;}
+.fgroup label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.fgroup input,.fgroup select,.fgroup textarea{
+  padding:10px 13px;border-radius:9px;border:1px solid var(--border);
+  background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;outline:none;transition:border-color .2s;
+}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{border-color:var(--accent);background:#fff;}
+.fgroup textarea{resize:vertical;min-height:80px;}
+.modal-foot{padding:16px 26px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.mf-cancel{flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-family:'Syne',sans-serif;font-size:14px;color:var(--muted);}
+.mf-post{flex:2;padding:12px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(135deg,#5b4fcf,#e8445a);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;}
+ 
+/* ── CHART ── */
+.chart-section{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--card-shadow);padding:22px 24px;margin-bottom:22px;}
+.chart-section h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:18px;}
+.bar-chart{display:flex;align-items:flex-end;gap:12px;height:150px;}
+.bc{display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;}
+.bbar{border-radius:6px 6px 0 0;width:100%;transition:height .6s ease;}
+.blabel{font-size:11px;color:var(--muted);}
+.bval{font-size:11px;font-weight:700;color:var(--accent);}
+ 
+/* ── RECENT ACTIVITY ── */
+.activity-list{padding:8px 20px 16px;}
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.act-item:last-child{border-bottom:none;}
+.act-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;margin-top:2px;}
+.act-text{font-size:13px;line-height:1.5;}
+.act-text strong{color:var(--navy);}
+.act-time{font-size:11px;color:var(--muted);margin-top:3px;}
+</style>
+</head>
+<body>
+ 
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">🏢</div>
+    <span class="brand-txt">InternHub</span>
+    <span class="brand-badge">COMPANY</span>
+  </div>
+  <span class="nav-sec">Menu</span>
+  <a href="company-dashboard.html" class="nav-a active"><span class="ic">🏠</span> Dashboard</a>
+  <a href="#" class="nav-a" onclick="openModal()"><span class="ic">➕</span> Post Internship</a>
+  <a href="#" class="nav-a"><span class="ic">📋</span> My Postings <span class="nbadge">5</span></a>
+  <a href="#" class="nav-a"><span class="ic">👥</span> Applicants <span class="nbadge">12</span></a>
+  <a href="#" class="nav-a"><span class="ic">📅</span> Interviews</a>
+  <a href="#" class="nav-a"><span class="ic">📊</span> Analytics</a>
+  <span class="nav-sec">Account</span>
+  <a href="#" class="nav-a"><span class="ic">🏢</span> Company Profile</a>
+  <a href="#" class="nav-a"><span class="ic">⚙️</span> Settings</a>
+  <a href="login.html" class="nav-a"><span class="ic">🚪</span> Logout</a>
+  <div class="sidebar-foot">
+    <div class="co-row">
+      <div class="co-av">🏢</div>
+      <div>
+        <div class="co-name">TechSoft Solutions</div>
+        <div class="co-role">Verified Company</div>
+      </div>
+    </div>
+  </div>
+</aside>
+ 
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <h1>Company Dashboard</h1>
+      <p>Welcome back, TechSoft Solutions 👋</p>
+    </div>
+    <div class="tb-right">
+      <div class="tb-icon">🔔<div class="ndot"></div></div>
+      <div class="tb-icon">✉️</div>
+      <button class="post-btn" onclick="openModal()">➕ Post Internship</button>
+    </div>
+  </div>
+ 
+  <div class="content">
+    <!-- WELCOME BANNER -->
+    <div class="welcome">
+      <div class="welcome-text">
+        <h2>Hire Talented <span>Interns</span> Today! 🚀</h2>
+        <p>You have 12 new applicants waiting for review. Don't keep them waiting!</p>
+        <div class="welcome-actions">
+          <button class="wa-btn wa-primary" onclick="document.getElementById('appSection').scrollIntoView({behavior:'smooth'})">Review Applicants</button>
+          <button class="wa-btn wa-secondary" onclick="openModal()">Post New Internship</button>
+        </div>
+      </div>
+      <div class="welcome-stats">
+        <div class="ws"><div class="ws-num">5</div><div class="ws-label">Active Posts</div></div>
+        <div class="ws"><div class="ws-num">48</div><div class="ws-label">Total Apps</div></div>
+        <div class="ws"><div class="ws-num">3</div><div class="ws-label">Hired</div></div>
+      </div>
+    </div>
+ 
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#ede9fe">📢</div>
+        <div>
+          <div class="stat-num">5</div>
+          <div class="stat-lbl">Active Postings</div>
+          <div class="stat-trend trend-up">↑ 2 this week</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe">👥</div>
+        <div>
+          <div class="stat-num">48</div>
+          <div class="stat-lbl">Total Applicants</div>
+          <div class="stat-trend trend-up">↑ 12 new today</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d1fae5">✅</div>
+        <div>
+          <div class="stat-num">3</div>
+          <div class="stat-lbl">Interns Hired</div>
+          <div class="stat-trend trend-up">↑ 1 this month</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3c7">📅</div>
+        <div>
+          <div class="stat-num">6</div>
+          <div class="stat-lbl">Interviews Scheduled</div>
+          <div class="stat-trend trend-up">↑ 2 upcoming</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- CHART -->
+    <div class="chart-section">
+      <h3>📊 Applications Received — Last 7 Days</h3>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+ 
+    <!-- TWO COL: POSTINGS + APPLICANTS -->
+    <div class="two-col">
+      <!-- POSTINGS TABLE -->
+      <div class="card">
+        <div class="card-hdr">
+          <h3>💼 My Internship Postings</h3>
+          <div class="card-actions">
+            <input class="ca-input" placeholder="Search..." oninput="filterTable(this.value)"/>
+            <button class="ca-btn" onclick="openModal()">+ New Post</button>
+          </div>
+        </div>
+        <table id="postTable">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Location</th>
+              <th>Stipend</th>
+              <th>Apps</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-bold">Frontend Developer</td>
+              <td>Remote</td>
+              <td>₹15,000/mo</td>
+              <td>14</td>
+              <td><span class="badge b-active">Active</span></td>
+              <td><div class="act-btns"><button class="act" onclick="viewApplicants('Frontend Developer')">View</button><button class="act" onclick="editPost('Frontend Developer')">Edit</button><button class="act red" onclick="closePost(this)">Close</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-bold">React Native Dev</td>
+              <td>Bangalore</td>
+              <td>₹20,000/mo</td>
+              <td>9</td>
+              <td><span class="badge b-active">Active</span></td>
+              <td><div class="act-btns"><button class="act" onclick="viewApplicants('React Native Dev')">View</button><button class="act" onclick="editPost('React Native Dev')">Edit</button><button class="act red" onclick="closePost(this)">Close</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-bold">UI/UX Designer</td>
+              <td>Chennai</td>
+              <td>₹12,000/mo</td>
+              <td>18</td>
+              <td><span class="badge b-active">Active</span></td>
+              <td><div class="act-btns"><button class="act" onclick="viewApplicants('UI/UX Designer')">View</button><button class="act">Edit</button><button class="act red" onclick="closePost(this)">Close</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-bold">Data Analyst</td>
+              <td>Remote</td>
+              <td>₹18,000/mo</td>
+              <td>5</td>
+              <td><span class="badge b-draft">Draft</span></td>
+              <td><div class="act-btns"><button class="act" onclick="publishPost(this)">Publish</button><button class="act">Edit</button><button class="act red" onclick="deletePost(this)">Delete</button></div></td>
+            </tr>
+            <tr>
+              <td class="td-bold">Backend Engineer</td>
+              <td>Mumbai</td>
+              <td>₹22,000/mo</td>
+              <td>2</td>
+              <td><span class="badge b-closed">Closed</span></td>
+              <td><div class="act-btns"><button class="act" onclick="alert('Reopening post...')">Reopen</button><button class="act">View</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+ 
+      <!-- APPLICANTS PANEL -->
+      <div class="card" id="appSection">
+        <div class="ap-hdr">
+          <h3>👥 Recent Applicants</h3>
+          <span style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">See all →</span>
+        </div>
+        <div class="ap-list" id="apList"></div>
+      </div>
+    </div>
+ 
+    <!-- ACTIVITY FEED -->
+    <div class="card">
+      <div class="card-hdr"><h3>🕐 Recent Activity</h3></div>
+      <div class="activity-list" id="actList"></div>
+    </div>
+  </div>
+</div>
+ 
+<!-- POST INTERNSHIP MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <h2>➕ Post New Internship</h2>
+      <button class="close-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fgroup"><label>Role / Title</label><input type="text" placeholder="e.g. Frontend Developer Intern"/></div>
+        <div class="fgroup"><label>Department</label><input type="text" placeholder="e.g. Engineering"/></div>
+      </div>
+      <div class="frow">
+        <div class="fgroup"><label>Location</label><select><option>Remote</option><option>Chennai</option><option>Bangalore</option><option>Mumbai</option><option>Hybrid</option></select></div>
+        <div class="fgroup"><label>Duration</label><select><option>1 Month</option><option>2 Months</option><option>3 Months</option><option>6 Months</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="fgroup"><label>Monthly Stipend (₹)</label><input type="number" placeholder="e.g. 15000"/></div>
+        <div class="fgroup"><label>No. of Openings</label><input type="number" placeholder="e.g. 3"/></div>
+      </div>
+      <div class="frow">
+        <div class="fgroup"><label>Last Date to Apply</label><input type="date"/></div>
+        <div class="fgroup"><label>Eligibility</label><select><option>Any Year</option><option>2nd Year</option><option>3rd Year</option><option>Final Year</option></select></div>
+      </div>
+      <div class="frow" style="grid-template-columns:1fr;">
+        <div class="fgroup full"><label>Job Description</label><textarea placeholder="Describe the role, responsibilities, and what the intern will learn..."></textarea></div>
+      </div>
+      <div class="frow" style="grid-template-columns:1fr;">
+        <div class="fgroup full"><label>Skills Required</label><input type="text" placeholder="e.g. React, CSS, Git (comma separated)"/></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="mf-cancel" onclick="closeModal()">Cancel</button>
+      <button class="mf-post" onclick="postInternship()">🚀 Post Internship</button>
+    </div>
+  </div>
+</div>
+ 
+<script>
+// Applicants data
+const applicants = [
+  {name:'Vandana R',role:'Frontend Developer',college:'REC Chennai',status:'new',color:'#5b4fcf',time:'2 hrs ago'},
+  {name:'Arun Kumar',role:'React Native Dev',college:'Anna University',status:'shortlisted',color:'#059669',time:'4 hrs ago'},
+  {name:'Priya S',role:'UI/UX Designer',college:'VIT Chennai',status:'new',color:'#e8445a',time:'5 hrs ago'},
+  {name:'Rahul M',role:'Frontend Developer',college:'SRM University',status:'new',color:'#f59e0b',time:'6 hrs ago'},
+  {name:'Sneha K',role:'Data Analyst',college:'Loyola College',status:'shortlisted',color:'#6366f1',time:'8 hrs ago'},
+  {name:'Karthik V',role:'React Native Dev',college:'PSG Tech',status:'rejected',color:'#0ea5e9',time:'1 day ago'},
+];
+ 
+const statusMap = {
+  new:{cls:'aps-new',label:'New'},
+  shortlisted:{cls:'aps-short',label:'Shortlisted'},
+  rejected:{cls:'aps-rej',label:'Rejected'},
+};
+ 
+function renderApplicants(){
+  const list = document.getElementById('apList');
+  applicants.forEach((a,i) => {
+    list.innerHTML += `
+    <div class="applicant" style="animation:slideUp .35s ease ${i*0.07}s both">
+      <div class="ap-av" style="background:${a.color}">${a.name.charAt(0)}</div>
+      <div>
+        <div class="ap-name">${a.name}</div>
+        <div class="ap-role">${a.role} · ${a.college}</div>
+      </div>
+      <div class="ap-right">
+        <span class="ap-status ${statusMap[a.status].cls}">${statusMap[a.status].label}</span>
+        <span class="ap-time">${a.time}</span>
+      </div>
+    </div>`;
+  });
+}
+ 
+// Activity data
+const activities = [
+  {icon:'👤',bg:'#dbeafe',text:'<strong>Vandana R</strong> applied for <strong>Frontend Developer Intern</strong>',time:'2 hours ago'},
+  {icon:'✅',bg:'#d1fae5',text:'You shortlisted <strong>Arun Kumar</strong> for <strong>React Native Dev</strong>',time:'4 hours ago'},
+  {icon:'📢',bg:'#ede9fe',text:'Your posting <strong>UI/UX Designer Intern</strong> received 5 new applications',time:'6 hours ago'},
+  {icon:'📅',bg:'#fef3c7',text:'Interview scheduled with <strong>Priya S</strong> for May 16 at 10:00 AM',time:'8 hours ago'},
+  {icon:'🏆',bg:'#d1fae5',text:'<strong>Sneha K</strong> accepted the internship offer for <strong>Data Analyst</strong>',time:'1 day ago'},
+];
+ 
+function renderActivity(){
+  const list = document.getElementById('actList');
+  activities.forEach((a,i) => {
+    list.innerHTML += `
+    <div class="act-item" style="animation:slideUp .4s ease ${i*0.08}s both">
+      <div class="act-dot" style="background:${a.bg}">${a.icon}</div>
+      <div>
+        <div class="act-text">${a.text}</div>
+        <div class="act-time">🕐 ${a.time}</div>
+      </div>
+    </div>`;
+  });
+}
+ 
+// Bar chart
+const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const vals = [5,8,12,7,15,6,10];
+const maxV = Math.max(...vals);
+const colors = ['#5b4fcf','#6366f1','#e8445a','#5b4fcf','#00c896','#f59e0b','#5b4fcf'];
+function renderChart(){
+  const bc = document.getElementById('barChart');
+  days.forEach((d,i) => {
+    const pct = (vals[i]/maxV)*100;
+    bc.innerHTML += `
+    <div class="bc">
+      <div class="bval">${vals[i]}</div>
+      <div class="bbar" style="height:${pct}%;background:${colors[i]};min-height:8px"></div>
+      <div class="blabel">${d}</div>
+    </div>`;
+  });
+}
+ 
+// Modal
+function openModal(){ document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function closeModalOut(e){ if(e.target===document.getElementById('modal')) closeModal(); }
+ 
+function postInternship(){
+  alert('✅ Internship posted successfully!\nYour posting is now live and visible to students.');
+  closeModal();
+}
+ 
+// Table actions
+function filterTable(q){
+  const rows = document.querySelectorAll('#postTable tbody tr');
+  rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none'; });
+}
+function viewApplicants(role){ alert(`Opening applicants for: ${role}\n\nRedirecting to applicants page...`); }
+function editPost(role){ alert(`Edit form for: ${role}`); }
+function closePost(btn){ if(confirm('Close this posting?')){ btn.closest('tr').querySelector('.badge').className='badge b-closed'; btn.closest('tr').querySelector('.badge').textContent='Closed'; } }
+function publishPost(btn){ btn.closest('tr').querySelector('.badge').className='badge b-active'; btn.closest('tr').querySelector('.badge').textContent='Active'; btn.textContent='Close'; }
+function deletePost(btn){ if(confirm('Delete this posting?')){ btn.closest('tr').style.opacity='.3'; setTimeout(()=>btn.closest('tr').remove(),300); } }
+ 
+renderApplicants();
+renderActivity();
+renderChart();
+</script>
+</body>
+</html>
