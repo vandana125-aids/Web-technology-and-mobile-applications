@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>InternHub — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0a0800;--sidebar:#110e00;--card:#181400;--border:#2a2400;--accent:#f59e0b;--accent2:#ef4444;--accent3:#22d3a5;--text:#f0e8d0;--muted:#7a6e40;--red:#f43f5e;--blue:#60a5fa;--purple:#a855f7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+.sidebar{width:230px;min-height:100vh;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100}
+.logo-wrap{padding:22px 18px 16px;border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;background:linear-gradient(90deg,var(--red),#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:.66rem;color:var(--muted);margin-top:2px}
+.nav-label{padding:14px 0 4px 18px;font-size:.62rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;color:var(--muted);font-size:.86rem;font-weight:500;cursor:pointer;border-left:3px solid transparent;transition:all .2s}
+.nav-item:hover{color:var(--text);background:rgba(244,63,94,.04)}
+.nav-item.active{color:var(--red);background:rgba(244,63,94,.08);border-left-color:var(--red)}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:20px}
+.sidebar-bottom{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border)}
+.user-row{display:flex;align-items:center;gap:9px}
+.av{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--red),#f97316);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.84rem;color:#fff;flex-shrink:0}
+.u-name{font-size:.84rem;font-weight:600}
+.u-sub{font-size:.68rem;color:var(--muted)}
+.main{margin-left:230px;flex:1;display:flex;flex-direction:column}
+.topbar{height:58px;background:rgba(10,8,0,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--red)}
+.icon-btn{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.88rem}
+.content{padding:26px;flex:1}
+.page{display:none}
+.page.active{display:block;animation:fadeUp .4s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:3px}
+.page-sub{color:var(--muted);font-size:.83rem;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.card-title{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat:nth-child(1)::before{background:linear-gradient(90deg,var(--red),#f97316)}
+.stat:nth-child(2)::before{background:linear-gradient(90deg,var(--blue),#6366f1)}
+.stat:nth-child(3)::before{background:linear-gradient(90deg,var(--accent3),#0ea5e9)}
+.stat:nth-child(4)::before{background:linear-gradient(90deg,var(--purple),#ec4899)}
+.stat-icon{font-size:1.4rem;margin-bottom:8px}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800}
+.stat-label{font-size:.72rem;color:var(--muted);margin-top:2px}
+.stat-trend{font-size:.68rem;color:var(--accent3);margin-top:5px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.row{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none;padding-bottom:0}
+.av2{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.86rem;flex-shrink:0}
+.info{flex:1}
+.info .name{font-weight:600;font-size:.88rem}
+.info .meta{font-size:.74rem;color:var(--muted);margin-top:2px}
+.pill{font-size:.68rem;padding:3px 9px;border-radius:20px;font-weight:600}
+.p-student{background:rgba(96,165,250,.15);color:var(--blue)}
+.p-company{background:rgba(245,158,11,.15);color:var(--accent)}
+.p-admin{background:rgba(244,63,94,.15);color:var(--red)}
+.p-active{background:rgba(34,211,165,.15);color:var(--accent3)}
+.p-pending{background:rgba(245,158,11,.15);color:var(--accent)}
+.act-btn{padding:5px 10px;border-radius:7px;font-size:.7rem;font-weight:600;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .2s;margin-left:4px}
+.act-btn:hover{opacity:.8}
+.form-label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:4px;margin-top:11px}
+.form-input{width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--red)}
+select.form-input option{background:#181400}
+.save-btn{margin-top:16px;padding:12px 26px;background:linear-gradient(135deg,var(--red),#f97316);border:none;border-radius:11px;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;transition:transform .2s}
+.save-btn:hover{transform:translateY(-2px)}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pr-label{font-size:.78rem;color:var(--muted);width:90px}
+.pr-bar{flex:1;height:7px;border-radius:4px;background:var(--border);overflow:hidden}
+.pr-fill{height:100%;border-radius:4px}
+.pr-val{font-size:.78rem;font-weight:700;width:36px;text-align:right}
+.approval-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+#toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--red),#f97316);color:#fff;padding:12px 20px;border-radius:11px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.84rem;z-index:9999;display:none;box-shadow:0 16px 40px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo-wrap"><div class="logo">InternHub</div><div class="logo-sub">Admin Control Panel</div></div>
+  <div class="nav-label">Dashboard</div>
+  <div class="nav-item active" onclick="showPage('overview')"><span>🏠</span> Overview</div>
+  <div class="nav-item" onclick="showPage('users')"><span>👥</span> Manage Users</div>
+  <div class="nav-item" onclick="showPage('internships')"><span>💼</span> Internships</div>
+  <div class="nav-item" onclick="showPage('approvals')"><span>✅</span> Approvals <span class="nav-badge">4</span></div>
+  <div class="nav-item" onclick="showPage('reports')"><span>📊</span> Reports</div>
+  <div class="nav-label">Management</div>
+  <div class="nav-item" onclick="showPage('lms')"><span>🎓</span> LMS Control</div>
+  <div class="nav-item" onclick="showPage('notifications')"><span>🔔</span> Notifications <span class="nav-badge">7</span></div>
+  <div class="nav-item" onclick="showPage('settings')"><span>⚙️</span> Settings</div>
+  <div class="nav-label">Other</div>
+  <div class="nav-item" onclick="window.location.href='login.html'"><span>🚪</span> Logout</div>
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="av">🛡</div>
+      <div><div class="u-name">Super Admin</div><div class="u-sub">Full Access ✓</div></div>
+    </div>
+  </div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">🛡️ Admin Control Panel</div>
+    <div style="display:flex;gap:9px"><div class="icon-btn">🔔</div><div class="icon-btn">⚙️</div></div>
+  </div>
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div id="pg-overview" class="page active">
+      <div class="page-title">Platform Overview</div>
+      <div class="page-sub">Complete statistics of InternHub platform</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-icon">👥</div><div class="stat-val">18,452</div><div class="stat-label">Total Students</div><div class="stat-trend">↑ 12% this month</div></div>
+        <div class="stat"><div class="stat-icon">🏢</div><div class="stat-val">582</div><div class="stat-label">Companies</div><div class="stat-trend">↑ 8% this month</div></div>
+        <div class="stat"><div class="stat-icon">💼</div><div class="stat-val">2,481</div><div class="stat-label">Active Internships</div><div class="stat-trend">↑ 24% this month</div></div>
+        <div class="stat"><div class="stat-icon">📋</div><div class="stat-val">14,230</div><div class="stat-label">Total Applications</div><div class="stat-trend">↑ 31% this month</div></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#1a0000,#2a0a00);border:1px solid rgba(244,63,94,.2);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:3px">⚠️ 4 Companies Awaiting Approval</div>
+          <div style="font-size:.82rem;color:var(--muted)">Review and approve new company registrations</div>
+        </div>
+        <button class="save-btn" style="margin-top:0" onclick="showPage('approvals')">Review Now →</button>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Applications This Week</div></div>
+          <div style="display:flex;align-items:flex-end;gap:8px;height:100px" id="chartBars"></div>
+          <div style="display:flex;gap:8px;margin-top:6px" id="chartLabels"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">🍩 User Distribution</div></div>
+          <div style="display:flex;align-items:center;gap:20px;padding:8px 0">
+            <svg width="110" height="110" viewBox="0 0 42 42">
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="#2a2400" stroke-width="5"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--blue)" stroke-width="5" stroke-dasharray="70 30" stroke-dashoffset="25"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--accent)" stroke-width="5" stroke-dasharray="21 79" stroke-dashoffset="-45"/>
+              <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--red)" stroke-width="5" stroke-dasharray="9 91" stroke-dashoffset="-66"/>
+            </svg>
+            <div>
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.8rem"><div style="width:10px;height:10px;border-radius:50%;background:var(--blue)"></div>Students (70%)</div>
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.8rem"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent)"></div>Companies (21%)</div>
+              <div style="display:flex;align-items:center;gap:7px;font-size:.8rem"><div style="width:10px;height:10px;border-radius:50%;background:var(--red)"></div>Admins (9%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🕐 Recent Activity</div></div>
+        <div id="actFeed"></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="pg-users" class="page">
+      <div class="page-title">👥 Manage Users</div>
+      <div class="page-sub">View, edit, suspend or delete all users</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <input class="form-input" style="max-width:240px" type="text" placeholder="🔍 Search users..." oninput="searchUsers(this.value)"/>
+        <select class="form-input" style="width:auto;padding:10px 12px" onchange="filterRole(this.value)">
+          <option value="">All Roles</option><option>Student</option><option>Company</option><option>Admin</option>
+        </select>
+      </div>
+      <div class="card"><div id="userList"></div></div>
+    </div>
+
+    <!-- INTERNSHIPS -->
+    <div id="pg-internships" class="page">
+      <div class="page-title">💼 All Internships</div>
+      <div class="page-sub">Monitor and manage all posted internships</div>
+      <div class="card" id="internList"></div>
+    </div>
+
+    <!-- APPROVALS -->
+    <div id="pg-approvals" class="page">
+      <div class="page-title">✅ Pending Approvals</div>
+      <div class="page-sub">Approve or reject new company registrations</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏢 Company Approvals</div></div>
+          <div id="compApprovals"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">💼 Internship Approvals</div></div>
+          <div id="internApprovals"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="pg-reports" class="page">
+      <div class="page-title">📊 Reports & Analytics</div>
+      <div class="page-sub">Platform performance data and insights</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-icon">📈</div><div class="stat-val">68%</div><div class="stat-label">Placement Rate</div><div class="stat-trend">↑ 34% vs last month</div></div>
+        <div class="stat"><div class="stat-icon">⭐</div><div class="stat-val">4.6</div><div class="stat-label">Avg Company Rating</div><div class="stat-trend">↑ 0.2 this month</div></div>
+        <div class="stat"><div class="stat-icon">💰</div><div class="stat-val">₹14.2K</div><div class="stat-label">Avg Stipend</div><div class="stat-trend">↑ 15% this month</div></div>
+        <div class="stat"><div class="stat-icon">🎓</div><div class="stat-val">3,840</div><div class="stat-label">Courses Completed</div><div class="stat-trend">↑ 22% this month</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">🏢 Top Domains</div>
+          <div class="progress-row"><div class="pr-label">Tech / IT</div><div class="pr-bar"><div class="pr-fill" style="width:72%;background:var(--blue)"></div></div><div class="pr-val" style="color:var(--blue)">72%</div></div>
+          <div class="progress-row"><div class="pr-label">Design</div><div class="pr-bar"><div class="pr-fill" style="width:48%;background:var(--purple)"></div></div><div class="pr-val" style="color:var(--purple)">48%</div></div>
+          <div class="progress-row"><div class="pr-label">Marketing</div><div class="pr-bar"><div class="pr-fill" style="width:35%;background:var(--accent)"></div></div><div class="pr-val" style="color:var(--accent)">35%</div></div>
+          <div class="progress-row"><div class="pr-label">Finance</div><div class="pr-bar"><div class="pr-fill" style="width:22%;background:var(--accent3)"></div></div><div class="pr-val" style="color:var(--accent3)">22%</div></div>
+          <div class="progress-row"><div class="pr-label">HR</div><div class="pr-bar"><div class="pr-fill" style="width:14%;background:var(--red)"></div></div><div class="pr-val" style="color:var(--red)">14%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">📍 Top Cities</div>
+          <div class="progress-row"><div class="pr-label">Remote</div><div class="pr-bar"><div class="pr-fill" style="width:65%;background:var(--blue)"></div></div><div class="pr-val" style="color:var(--blue)">65%</div></div>
+          <div class="progress-row"><div class="pr-label">Bangalore</div><div class="pr-bar"><div class="pr-fill" style="width:52%;background:var(--purple)"></div></div><div class="pr-val" style="color:var(--purple)">52%</div></div>
+          <div class="progress-row"><div class="pr-label">Chennai</div><div class="pr-bar"><div class="pr-fill" style="width:40%;background:var(--accent)"></div></div><div class="pr-val" style="color:var(--accent)">40%</div></div>
+          <div class="progress-row"><div class="pr-label">Mumbai</div><div class="pr-bar"><div class="pr-fill" style="width:28%;background:var(--accent3)"></div></div><div class="pr-val" style="color:var(--accent3)">28%</div></div>
+          <div class="progress-row"><div class="pr-label">Hyderabad</div><div class="pr-bar"><div class="pr-fill" style="width:18%;background:var(--red)"></div></div><div class="pr-val" style="color:var(--red)">18%</div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="save-btn" onclick="toast('📥 PDF downloading...')">📥 Export PDF</button>
+        <button class="save-btn" style="background:linear-gradient(135deg,var(--accent3),#0ea5e9)" onclick="toast('📊 Excel downloading...')">📊 Export Excel</button>
+        <button class="save-btn" style="background:linear-gradient(135deg,var(--blue),#6366f1)" onclick="toast('📧 Report emailed!')">📧 Email Report</button>
+      </div>
+    </div>
+
+    <!-- LMS -->
+    <div id="pg-lms" class="page">
+      <div class="page-title">🎓 LMS Control</div>
+      <div class="page-sub">Manage courses, content, and student progress</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-icon">📚</div><div class="stat-val">48</div><div class="stat-label">Total Courses</div></div>
+        <div class="stat"><div class="stat-icon">👨‍🎓</div><div class="stat-val">3,840</div><div class="stat-label">Completions</div></div>
+        <div class="stat"><div class="stat-icon">🏅</div><div class="stat-val">2,100</div><div class="stat-label">Certificates Issued</div></div>
+        <div class="stat"><div class="stat-icon">⭐</div><div class="stat-val">4.8</div><div class="stat-label">Avg Course Rating</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📚 All Courses</div><button class="save-btn" style="margin-top:0;padding:8px 14px;font-size:.78rem" onclick="toast('➕ Add Course form!')">+ Add Course</button></div>
+        <div id="courseList"></div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="pg-notifications" class="page">
+      <div class="page-title">🔔 Send Notifications</div>
+      <div class="page-sub">Broadcast messages to students and companies</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">📢 Send Broadcast</div>
+          <label class="form-label">Target Audience</label>
+          <select class="form-input"><option>All Users</option><option>Students Only</option><option>Companies Only</option></select>
+          <label class="form-label">Title</label>
+          <input class="form-input" type="text" placeholder="e.g. New Internships Available!"/>
+          <label class="form-label">Message</label>
+          <textarea class="form-input" rows="4" style="resize:none" placeholder="Type your message..."></textarea>
+          <button class="save-btn" onclick="toast('📢 Notification sent!')">Send Notification</button>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">📬 Recent Broadcasts</div>
+          <div class="row"><div style="font-size:1.1rem">📢</div><div class="info"><div class="name">New internships added!</div><div class="meta">2 hours ago</div></div></div>
+          <div class="row"><div style="font-size:1.1rem">🎓</div><div class="info"><div class="name">New course: Cloud Computing</div><div class="meta">1 day ago</div></div></div>
+          <div class="row"><div style="font-size:1.1rem">⚠️</div><div class="info"><div class="name">Maintenance: May 20, 2AM</div><div class="meta">2 days ago</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="pg-settings" class="page">
+      <div class="page-title">⚙️ Platform Settings</div>
+      <div class="page-sub">Configure InternHub platform settings</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">🔧 General Settings</div>
+          <label class="form-label">Platform Name</label><input class="form-input" type="text" value="InternHub"/>
+          <label class="form-label">Contact Email</label><input class="form-input" type="email" value="admin@internhub.in"/>
+          <label class="form-label">Max Applications Per Student</label><input class="form-input" type="number" value="10"/>
+          <label class="form-label">Internship Approval</label>
+          <select class="form-input"><option>Manual Approval</option><option>Auto Approve</option></select>
+          <button class="save-btn" onclick="toast('✅ Settings saved!')">Save Settings</button>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px">🔔 Notification Settings</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:.86rem;font-weight:600">Email Notifications</div><div style="font-size:.74rem;color:var(--muted)">Send email alerts to users</div></div>
+            <div onclick="toggleSw(this)" style="width:42px;height:22px;border-radius:99px;background:var(--accent3);cursor:pointer;position:relative;transition:background .3s"><div style="position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:all .3s"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:.86rem;font-weight:600">SMS Alerts</div><div style="font-size:.74rem;color:var(--muted)">Send SMS to users</div></div>
+            <div onclick="toggleSw(this)" style="width:42px;height:22px;border-radius:99px;background:var(--border);cursor:pointer;position:relative;transition:background .3s"><div style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:all .3s"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+            <div><div style="font-size:.86rem;font-weight:600">New Company Alert</div><div style="font-size:.74rem;color:var(--muted)">Alert admin on new signup</div></div>
+            <div onclick="toggleSw(this)" style="width:42px;height:22px;border-radius:99px;background:var(--accent3);cursor:pointer;position:relative;transition:background .3s"><div style="position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:all .3s"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+<div id="toast"></div>
+<script>
+const users=[
+  {name:'Vandana R',email:'vandana@rec.edu',role:'Student',org:'REC Chennai',status:'Active',sc:'p-active',rsc:'p-student',color:'#f59e0b',init:'V'},
+  {name:'Arun Kumar',email:'arun@anna.edu',role:'Student',org:'Anna University',status:'Active',sc:'p-active',rsc:'p-student',color:'#a855f7',init:'A'},
+  {name:'TechCorp HR',email:'hr@techcorp.com',role:'Company',org:'TechCorp India',status:'Active',sc:'p-active',rsc:'p-company',color:'#22d3a5',init:'T'},
+  {name:'DataNexa AI',email:'team@datanexa.ai',role:'Company',org:'DataNexa AI',status:'Pending',sc:'p-pending',rsc:'p-company',color:'#60a5fa',init:'D'},
+  {name:'Priya S',email:'priya@vit.edu',role:'Student',org:'VIT Chennai',status:'Active',sc:'p-active',rsc:'p-student',color:'#ef4444',init:'P'},
+  {name:'Super Admin',email:'admin@internhub.in',role:'Admin',org:'InternHub',status:'Active',sc:'p-active',rsc:'p-admin',color:'#f43f5e',init:'🛡'},
+];
+const internships=[
+  {title:'Data Science Intern',company:'TechCorp India',apps:54,stipend:'₹15,000',status:'Active',sc:'p-active'},
+  {title:'ML Engineer Intern',company:'DataNexa AI',apps:18,stipend:'₹25,000',status:'Pending',sc:'p-pending'},
+  {title:'UI/UX Designer',company:'Creative Studio',apps:29,stipend:'₹10,000',status:'Active',sc:'p-active'},
+  {title:'Digital Marketing',company:'GrowthHive',apps:56,stipend:'₹8,000',status:'Active',sc:'p-active'},
+];
+const courses=[
+  {title:'React.js Basics',enrolled:420,completed:280,rating:'4.8'},
+  {title:'Python for Data Science',enrolled:610,completed:390,rating:'4.9'},
+  {title:'Figma UI/UX Design',enrolled:310,completed:180,rating:'4.7'},
+  {title:'Firebase Full Stack',enrolled:220,completed:120,rating:'4.6'},
+];
+const compAp=[
+  {name:'StartupX Pvt Ltd',sub:'May 10 · 3 internships pending',color:'#60a5fa',init:'S'},
+  {name:'CloudByte Technologies',sub:'May 9 · 5 internships pending',color:'#22d3a5',init:'C'},
+  {name:'IdeaForge Labs',sub:'May 8 · 2 internships pending',color:'#f59e0b',init:'I'},
+  {name:'FinEdge Analytics',sub:'May 7 · 1 internship pending',color:'#a855f7',init:'F'},
+];
+const internAp=[
+  {name:'Full Stack Developer Intern',sub:'TechCorp · ₹20,000/mo',color:'#60a5fa',init:'F'},
+  {name:'AI/ML Research Intern',sub:'DataNexa AI · ₹28,000/mo',color:'#22d3a5',init:'A'},
+  {name:'Brand Design Intern',sub:'Creative Studio · ₹12,000/mo',color:'#a855f7',init:'B'},
+];
+const acts=[
+  {icon:'👤',text:'<strong>Vandana R</strong> registered from <strong>REC Chennai</strong>',time:'2 hours ago'},
+  {icon:'🏢',text:'<strong>TechCorp India</strong> posted new <strong>Data Science Intern</strong>',time:'4 hours ago'},
+  {icon:'📋',text:'<strong>54 applications</strong> received at <strong>DataNexa AI</strong>',time:'6 hours ago'},
+  {icon:'✅',text:'Company <strong>StartupX</strong> approved by admin',time:'8 hours ago'},
+  {icon:'⭐',text:'<strong>Arun Kumar</strong> completed <strong>React.js Basics</strong> with 98%',time:'1 day ago'},
+];
+let allUsers=[...users];
+function userRow(u){return`<div class="row"><div class="av2" style="background:${u.color}">${u.init}</div><div class="info"><div class="name">${u.name}</div><div class="meta">${u.email} · ${u.org}</div></div><span class="pill ${u.rsc}">${u.role}</span><span class="pill ${u.sc}" style="margin-left:5px">${u.status}</span><button class="act-btn" style="background:rgba(96,165,250,.15);color:var(--blue)" onclick="toast('👁 Viewing ${u.name}')">View</button><button class="act-btn" style="background:rgba(34,211,165,.15);color:var(--accent3)" onclick="toast('✅ ${u.name} approved!')">Approve</button><button class="act-btn" style="background:rgba(244,63,94,.15);color:var(--red)" onclick="delUser(this,'${u.name}')">Delete</button></div>`;}
+function delUser(btn,name){if(confirm('Delete '+name+'?')){const r=btn.closest('.row');r.style.opacity='.3';setTimeout(()=>r.remove(),300);}}
+function searchUsers(q){document.getElementById('userList').innerHTML=allUsers.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.email.toLowerCase().includes(q.toLowerCase())).map(userRow).join('');}
+function filterRole(role){document.getElementById('userList').innerHTML=(!role?allUsers:allUsers.filter(u=>u.role===role)).map(userRow).join('');}
+function approveItem(id,name){const el=document.getElementById(id);if(el){el.style.borderColor='rgba(34,211,165,.4)';el.style.background='rgba(34,211,165,.05)';}toast('✅ '+name+' approved!');}
+function rejectItem(id,name){const el=document.getElementById(id);if(el){el.style.opacity='.4';setTimeout(()=>el.remove(),400);}toast('❌ '+name+' rejected!');}
+function toggleSw(el){const on=el.style.background.includes('22d3a5');el.style.background=on?'var(--border)':'var(--accent3)';const d=el.firstElementChild;d.style.left=on?'3px':'auto';d.style.right=on?'auto':'3px';}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const map={overview:0,users:1,internships:2,approvals:3,reports:4,lms:5,notifications:6,settings:7};
+  const navs=document.querySelectorAll('.nav-item');
+  if(navs[map[p]])navs[map[p]].classList.add('active');
+  if(p==='overview'){
+    const vals=[12,18,24,32,41,28,54],labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],max=Math.max(...vals);
+    const colors=['var(--red)','var(--blue)','var(--accent3)','var(--purple)','var(--accent)','var(--blue)','var(--red)'];
+    document.getElementById('chartBars').innerHTML=vals.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:.64rem">${v}</div><div style="width:100%;height:${(v/max)*100}px;background:${colors[i]};border-radius:4px 4px 0 0;opacity:.85"></div></div>`).join('');
+    document.getElementById('chartLabels').innerHTML=labels.map(l=>`<div style="flex:1;text-align:center;font-size:.66rem;color:var(--muted)">${l}</div>`).join('');
+    document.getElementById('actFeed').innerHTML=acts.map(a=>`<div class="row"><div style="font-size:1.1rem">${a.icon}</div><div style="flex:1"><div style="font-size:.84rem">${a.text}</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">${a.time}</div></div></div>`).join('');
+  }
+  if(p==='users')document.getElementById('userList').innerHTML=users.map(userRow).join('');
+  if(p==='internships'){
+    document.getElementById('internList').innerHTML=`<div class="card-header"><div class="card-title">All Internship Listings</div></div>`+internships.map(i=>`<div class="row"><div style="flex:1"><div style="font-weight:600;font-size:.88rem">${i.title}</div><div style="font-size:.74rem;color:var(--muted);margin-top:2px">${i.company} · ${i.apps} applicants · ${i.stipend}/mo</div></div><span class="pill ${i.sc}">${i.status}</span><button class="act-btn" style="background:rgba(34,211,165,.15);color:var(--accent3)" onclick="toast('✅ Approved!')">Approve</button><button class="act-btn" style="background:rgba(244,63,94,.15);color:var(--red)" onclick="toast('❌ Removed!')">Remove</button></div>`).join('');
+  }
+  if(p==='approvals'){
+    document.getElementById('compApprovals').innerHTML=compAp.map((c,i)=>`<div class="approval-card" id="ca${i}"><div class="av2" style="background:${c.color};width:38px;height:38px;border-radius:9px">${c.init}</div><div class="info"><div class="name">${c.name}</div><div class="meta">${c.sub}</div></div><button class="act-btn" style="background:rgba(34,211,165,.15);color:var(--accent3)" onclick="approveItem('ca${i}','${c.name}')">✓</button><button class="act-btn" style="background:rgba(244,63,94,.15);color:var(--red)" onclick="rejectItem('ca${i}','${c.name}')">✗</button></div>`).join('');
+    document.getElementById('internApprovals').innerHTML=internAp.map((c,i)=>`<div class="approval-card" id="ia${i}"><div class="av2" style="background:${c.color};width:38px;height:38px;border-radius:9px">${c.init}</div><div class="info"><div class="name">${c.name}</div><div class="meta">${c.sub}</div></div><button class="act-btn" style="background:rgba(34,211,165,.15);color:var(--accent3)" onclick="approveItem('ia${i}','${c.name}')">✓</button><button class="act-btn" style="background:rgba(244,63,94,.15);color:var(--red)" onclick="rejectItem('ia${i}','${c.name}')">✗</button></div>`).join('');
+  }
+  if(p==='lms'){
+    document.getElementById('courseList').innerHTML=courses.map(c=>`<div class="row"><div style="font-size:1.2rem">📚</div><div class="info"><div class="name">${c.title}</div><div class="meta">${c.enrolled} enrolled · ${c.completed} completed · ⭐ ${c.rating}</div></div><div style="width:90px;margin:0 12px"><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.round(c.completed/c.enrolled*100)}%;background:var(--accent3)"></div></div><div style="font-size:.68rem;color:var(--muted);margin-top:3px">${Math.round(c.completed/c.enrolled*100)}%</div></div><button class="act-btn" style="background:rgba(96,165,250,.15);color:var(--blue)" onclick="toast('✏️ Editing!')">Edit</button><button class="act-btn" style="background:rgba(244,63,94,.15);color:var(--red)" onclick="toast('🗑 Deleted!')">Delete</button></div>`).join('');
+  }
+}
+showPage('overview');
+</script>
+</body>
+</html>
