@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>InternHub — Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#060d1f;--card:#0f1c35;--border:#1a2d4a;--accent:#00e5ff;--accent2:#a855f7;--text:#dde6f5;--muted:#4a6a8a;--success:#22d3a5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.12;pointer-events:none}
+.orb1{width:500px;height:500px;background:var(--accent);top:-150px;right:-100px}
+.orb2{width:400px;height:400px;background:var(--accent2);bottom:-100px;left:-100px}
+.box{position:relative;z-index:1;max-width:640px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:44px;box-shadow:0 40px 100px rgba(0,0,0,.5);animation:slideUp .7s cubic-bezier(.16,1,.3,1) both}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.logo{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.page-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin:16px 0 4px}
+.page-sub{color:var(--muted);font-size:.84rem;margin-bottom:24px}
+.role-row{display:flex;gap:0;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:26px}
+.role-opt{flex:1;padding:11px;text-align:center;border-radius:9px;cursor:pointer;font-size:.86rem;font-weight:500;color:var(--muted);transition:all .2s}
+.role-opt.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700}
+.steps{display:flex;align-items:center;margin-bottom:28px}
+.step{display:flex;align-items:center;gap:7px}
+.s-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;transition:all .3s}
+.s-num.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.s-num.done{background:var(--success);color:#fff}
+.s-num.pend{background:var(--border);color:var(--muted)}
+.s-label{font-size:.76rem;font-weight:600;color:var(--muted)}
+.s-label.active{color:var(--accent)}
+.s-line{flex:1;height:2px;background:var(--border);margin:0 8px;transition:background .3s}
+.s-line.done{background:var(--success)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.full{grid-column:1/-1}
+label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:5px}
+input,select,textarea{width:100%;padding:11px 13px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,255,.08)}
+select option{background:#0f1c35}
+.next-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#fff;font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:20px;transition:transform .2s}
+.next-btn:hover{transform:translateY(-2px)}
+.back-btn{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;cursor:pointer;margin-top:8px}
+.otp-boxes{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.otp-boxes input{width:52px;height:56px;text-align:center;font-size:1.4rem;font-family:'Syne',sans-serif;font-weight:700;border-radius:12px}
+.success-box{display:none;text-align:center;padding:36px 0}
+.success-icon{font-size:4.5rem;margin-bottom:16px;animation:pop .6s cubic-bezier(.16,1,.3,1) both}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.bottom-link{text-align:center;font-size:.82rem;color:var(--muted);margin-top:16px}
+.bottom-link a{color:var(--accent);text-decoration:none;font-weight:600}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div>
+<div class="box">
+  <div class="logo">InternHub</div>
+  <div class="page-title">Create Account</div>
+  <div class="page-sub">Join India's #1 internship platform today!</div>
+
+  <div class="role-row">
+    <div class="role-opt active" onclick="setRole('student',this)">🎓 Student</div>
+    <div class="role-opt" onclick="setRole('company',this)">🏢 Company</div>
+  </div>
+
+  <div class="steps" id="stepsBar">
+    <div class="step"><div class="s-num active" id="n1">1</div><div class="s-label active" id="l1">Basic Info</div></div>
+    <div class="s-line" id="line1"></div>
+    <div class="step"><div class="s-num pend" id="n2">2</div><div class="s-label" id="l2">Details</div></div>
+    <div class="s-line" id="line2"></div>
+    <div class="step"><div class="s-num pend" id="n3">3</div><div class="s-label" id="l3">Verify OTP</div></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="grid">
+      <div class="full"><label>Full Name *</label><input type="text" id="fname" placeholder="e.g. Vandana" value=""/></div>
+      <div><label>Email *</label><input type="email" id="femail" placeholder="vandana@rec.ac.in"/></div>
+      <div><label>Mobile Number *</label><input type="tel" id="fmobile" placeholder="+91 98765 43210"/></div>
+      <div class="full"><label>Password *</label><input type="password" placeholder="Minimum 8 characters"/></div>
+      <div class="full"><label>Confirm Password *</label><input type="password" placeholder="Re-enter password"/></div>
+    </div>
+    <button class="next-btn" onclick="goStep(2)">Next → Details</button>
+  </div>
+
+  <!-- STEP 2 STUDENT -->
+  <div id="step2-student" class="hidden">
+    <div class="grid">
+      <div class="full"><label>College Name *</label><input type="text" value="Rajalakshmi Engineering College" placeholder="e.g. Rajalakshmi Engineering College"/></div>
+      <div><label>Degree *</label><select><option>B.Tech</option><option>B.E.</option><option>B.Sc</option><option>MBA</option><option>MCA</option></select></div>
+      <div><label>Department *</label><select><option selected>AIDS</option><option>CSE</option><option>IT</option><option>ECE</option><option>Mechanical</option><option>Civil</option></select></div>
+      <div><label>Year *</label><select><option>1st Year</option><option selected>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div>
+      <div><label>CGPA</label><input type="text" placeholder="e.g. 8.2"/></div>
+      <div class="full"><label>Skills</label><input type="text" placeholder="Python, ML, SQL, Data Analysis"/></div>
+      <div class="full"><label>LinkedIn (optional)</label><input type="text" placeholder="linkedin.com/in/vandana"/></div>
+    </div>
+    <button class="next-btn" onclick="goStep(3)">Next → Verify OTP</button>
+    <button class="back-btn" onclick="goStep(1)">← Back</button>
+  </div>
+
+  <!-- STEP 2 COMPANY -->
+  <div id="step2-company" class="hidden">
+    <div class="grid">
+      <div class="full"><label>Company Name *</label><input type="text" placeholder="e.g. TechCorp India Pvt Ltd"/></div>
+      <div><label>Industry *</label><select><option>IT / Software</option><option>AI / ML</option><option>Finance</option><option>Marketing</option><option>Healthcare</option></select></div>
+      <div><label>Company Size</label><select><option>1–50</option><option>50–200</option><option>200–500</option><option>500–1000</option><option>1000+</option></select></div>
+      <div class="full"><label>Location *</label><input type="text" placeholder="e.g. Chennai, Tamil Nadu"/></div>
+      <div class="full"><label>GST Number *</label><input type="text" placeholder="29AAACT1234M1Z5"/></div>
+      <div class="full"><label>Website</label><input type="text" placeholder="https://yourcompany.com"/></div>
+    </div>
+    <button class="next-btn" onclick="goStep(3)">Next → Verify OTP</button>
+    <button class="back-btn" onclick="goStep(1)">← Back</button>
+  </div>
+
+  <!-- STEP 3 OTP -->
+  <div id="step3" class="hidden">
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="font-size:2.8rem;margin-bottom:10px">📱</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:5px">Verify Your Number</div>
+      <div style="color:var(--muted);font-size:.86rem">OTP sent to <span id="dispMob" style="color:var(--accent)">+91 98765 43210</span></div>
+    </div>
+    <div class="otp-boxes">
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,0)"/>
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,1)"/>
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,2)"/>
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,3)"/>
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,4)"/>
+      <input type="text" maxlength="1" class="otp-r" oninput="otpN(this,5)"/>
+    </div>
+    <div style="text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:16px">Didn't get it? <a href="#" style="color:var(--accent)">Resend OTP</a></div>
+    <button class="next-btn" onclick="finish()">✓ Create My Account</button>
+    <button class="back-btn" onclick="goStep(2)">← Back</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-box" id="successBox">
+    <div class="success-icon">🎉</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:8px">Account Created!</div>
+    <div style="color:var(--muted);font-size:.88rem;margin-bottom:24px" id="successMsg">Welcome to InternHub, Vandana! Your career journey starts now!</div>
+    <a href="login.html"><button class="next-btn" style="max-width:260px;margin:0 auto;display:block">→ Go to Login</button></a>
+  </div>
+
+  <div id="bottomLinks">
+    <div class="bottom-link">Already have an account? <a href="login.html">Sign In →</a></div>
+  </div>
+</div>
+<script>
+let currentRole='student',currentStep=1;
+function setRole(r,el){currentRole=r;document.querySelectorAll('.role-opt').forEach(e=>e.classList.remove('active'));el.classList.add('active')}
+function goStep(s){
+  ['step1','step2-student','step2-company','step3'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  if(s===1)document.getElementById('step1').classList.remove('hidden');
+  else if(s===2)document.getElementById('step2-'+currentRole).classList.remove('hidden');
+  else if(s===3){
+    document.getElementById('step3').classList.remove('hidden');
+    const m=document.getElementById('fmobile').value||'+91 98765 43210';
+    document.getElementById('dispMob').textContent=m;
+  }
+  currentStep=s;updateSteps(s);
+}
+function updateSteps(s){
+  for(let i=1;i<=3;i++){
+    const n=document.getElementById('n'+i),l=document.getElementById('l'+i);
+    if(i<s){n.className='s-num done';n.textContent='✓';}
+    else if(i===s){n.className='s-num active';n.textContent=i;l.className='s-label active';}
+    else{n.className='s-num pend';n.textContent=i;l.className='s-label';}
+    const line=document.getElementById('line'+i);
+    if(line)line.className='s-line'+(i<s?' done':'');
+  }
+}
+function finish(){
+  ['step1','step2-student','step2-company','step3'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('stepsBar').style.display='none';
+  document.querySelector('.role-row').style.display='none';
+  document.getElementById('bottomLinks').style.display='none';
+  const box=document.getElementById('successBox');box.style.display='block';
+  if(currentRole==='company')document.getElementById('successMsg').textContent='Your company account is pending admin approval. You\'ll be notified by email!';
+}
+function otpN(inp,idx){if(inp.value&&idx<5)document.querySelectorAll('.otp-r')[idx+1].focus()}
+</script>
+</body>
+</html>
